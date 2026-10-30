@@ -1,0 +1,88 @@
+<template>
+    <lightning-card title="Copado AI Activity" icon-name="utility:einstein">
+        <div class="dashboard slds-p-around_medium">
+            <div class="slds-grid slds-gutters slds-wrap slds-grid_vertical-align-end slds-m-bottom_medium">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4">
+                    <lightning-input
+                        type="date"
+                        name="startDate"
+                        label="Start Date"
+                        value={startDate}
+                        onchange={handleDateChange}>
+                    </lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4">
+                    <lightning-input
+                        type="date"
+                        name="endDate"
+                        label="End Date"
+                        value={endDate}
+                        onchange={handleDateChange}>
+                    </lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4">
+                    <lightning-button-group>
+                        <lightning-button
+                            label="Summary"
+                            data-mode="summary"
+                            variant={summaryVariant}
+                            onclick={handleViewModeChange}>
+                        </lightning-button>
+                        <lightning-button
+                            label="Raw"
+                            data-mode="raw"
+                            variant={rawVariant}
+                            onclick={handleViewModeChange}>
+                        </lightning-button>
+                    </lightning-button-group>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4">
+                    <lightning-button
+                        label="Refresh"
+                        icon-name="utility:refresh"
+                        data-id="refresh"
+                        onclick={handleRefresh}
+                        disabled={isLoading}>
+                    </lightning-button>
+                </div>
+            </div>
+
+            <template lwc:if={lastRefreshed}>
+                <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_small">
+                    Last refreshed
+                    <lightning-formatted-date-time
+                        value={lastRefreshed}
+                        year="numeric"
+                        month="short"
+                        day="2-digit"
+                        hour="2-digit"
+                        minute="2-digit">
+                    </lightning-formatted-date-time>
+                </p>
+            </template>
+
+            <template lwc:if={isLoading}>
+                <lightning-spinner alternative-text="Loading activity" size="medium"></lightning-spinner>
+            </template>
+
+            <template lwc:if={hasError}>
+                <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                    <span class="slds-assistive-text">Error</span>
+                    <p>{errorMessage}</p>
+                </div>
+            </template>
+
+            <template lwc:if={showTable}>
+                <lightning-datatable
+                    key-field="rowKey"
+                    data={activityData}
+                    columns={columns}
+                    sorted-by={sortedBy}
+                    sorted-direction={sortedDirection}
+                    onsort={handleSort}
+                    hide-checkbox-column>
+                </lightning-datatable>
+            </template>
+        </div>
+    </lightning-card>
+</template>
